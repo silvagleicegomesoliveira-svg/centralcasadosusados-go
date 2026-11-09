@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rota em Dia — portal informativo independente sobre serviços veiculares</title>
+<meta name="description" content="Portal editorial independente sobre documentação, transferência, licenciamento, compra de usado e revisão. Publicação mantida por Casa dos Usados Comercial LTDA, CNPJ 03.402.137/0001-60, com finalidade somente informativa.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231d3a2c'/%3E%3Ccircle cx='32' cy='32' r='17' fill='none' stroke='%23f2c230' stroke-width='5'/%3E%3Cpath d='M32 15v10M32 39v10M15 32h10' stroke='%23f2c230' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400;1,6..72,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/lenis@1.1.13/dist/lenis.css">
+<style>
+:root{
+  --paper:#f4f1ea; --paper-2:#e9e4d8; --card:#fbf9f4; --ink:#141613; --ink-2:#3f443d; --muted:#61675f;
+  --line:rgba(20,22,19,.14); --green:#1d3a2c; --green-2:#2c5642; --signal:#f2c230;
+  --display:'Bricolage Grotesque',system-ui,sans-serif; --serif:'Newsreader',Georgia,serif; --mono:'IBM Plex Mono',monospace;
+  --ease:cubic-bezier(.16,1,.3,1); --bar:44px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--paper);overflow-x:clip}
+body{font-family:var(--serif);font-size:18px;color:var(--ink);background:var(--paper);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:var(--signal);color:var(--ink)}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:300;opacity:.06;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.wrap{width:min(1320px,100% - 48px);margin-inline:auto}
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.kicker{display:inline-flex;align-items:center;gap:10px;color:var(--green-2)}
+.kicker::before{content:"";width:10px;height:10px;background:var(--signal);border:1.5px solid var(--ink);transform:rotate(45deg)}
+h1,h2,h3,h4{font-family:var(--display);font-weight:800;letter-spacing:-.03em;line-height:.95}
+h2 em,h1 em{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.02em}
+.notice{position:fixed;top:0;left:0;right:0;min-height:var(--bar);z-index:120;background:var(--signal);color:var(--ink);display:flex;align-items:center;justify-content:center;gap:12px;padding:6px 16px;font-family:var(--display);font-size:13px;line-height:1.3;border-bottom:1.5px solid var(--ink)}
+.notice svg{flex:none}
+.notice .short{display:none}
+.notice a{text-decoration:underline;text-underline-offset:3px;font-weight:600}
+.nav{position:fixed;top:var(--bar);left:0;right:0;z-index:110;transition:background-color .5s var(--ease),border-color .5s}
+.nav.scrolled{background:rgba(244,241,234,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:74px}
+.brand{display:flex;align-items:center;gap:12px;font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:-.03em}
+.brand svg{width:38px;height:38px;transition:transform .8s var(--ease)}
+.brand:hover svg{transform:rotate(180deg)}
+.brand small{display:block;font-family:var(--mono);font-weight:400;font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-top:3px}
+.links{display:flex;gap:30px;font-family:var(--display);font-size:14px;font-weight:600}
+.links a{position:relative;padding:4px 0}
+.links a::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:100%;background:var(--signal);transform:scaleX(0);transform-origin:right;transition:transform .5s var(--ease)}
+.links a:hover::after{transform:scaleX(1);transform-origin:left}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:999px;background:var(--ink);color:var(--paper);font-family:var(--display);font-weight:600;font-size:14px;position:relative;overflow:hidden;isolation:isolate;border:1.5px solid var(--ink);cursor:pointer;transition:transform .4s var(--ease),color .4s}
+.btn::before{content:"";position:absolute;inset:0;background:var(--signal);transform:translateY(101%);transition:transform .5s var(--ease);z-index:-1}
+.btn:hover{color:var(--ink)}
+.btn:hover::before{transform:none}
+.btn:active{transform:scale(.96)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn svg{width:16px;height:16px;transition:transform .4s var(--ease)}
+.btn:hover svg{transform:translateX(3px) rotate(-45deg)}
+.menu-btn{display:none;width:46px;height:46px;border-radius:50%;border:1.5px solid var(--ink);background:transparent;cursor:pointer;align-items:center;justify-content:center}
+.menu-btn span,.menu-btn span::before,.menu-btn span::after{display:block;width:18px;height:2px;background:var(--ink);position:relative}
+.menu-btn span::before,.menu-btn span::after{content:"";position:absolute;left:0}
+.menu-btn span::before{top:-6px}.menu-btn span::after{top:6px}
+.mobile-menu{position:fixed;inset:0;z-index:105;background:var(--green);color:var(--paper);padding:calc(var(--bar) + 110px) 24px 40px;display:flex;flex-direction:column;clip-path:inset(0 0 100% 0);transition:clip-path .8s var(--ease)}
+.mobile-menu.open{clip-path:inset(0 0 0 0)}
+.mobile-menu a{font-family:var(--display);font-weight:800;font-size:40px;letter-spacing:-.03em;border-bottom:1px solid rgba(244,241,234,.2);padding:10px 0}
+.hero{padding:calc(var(--bar) + 130px) 0 0}
+.hero-top{display:flex;justify-content:space-between;color:var(--muted);border-bottom:1.5px solid var(--ink);padding-bottom:16px;margin-bottom:46px}
+.hero h1{font-size:clamp(46px,7.4vw,124px)}
+.hero h1 em{color:var(--green-2)}
+.line{display:block;overflow:hidden;padding-bottom:.06em}
+.line > span{display:inline-block;animation:rise 1.25s var(--ease) both}
+.line:nth-child(2)>span{animation-delay:.1s}.line:nth-child(3)>span{animation-delay:.2s}.line:nth-child(4)>span{animation-delay:.3s}
+@keyframes rise{from{transform:translateY(108%)}to{transform:none}}
+.fade{animation:fadeUp 1s var(--ease) .55s both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.hero-row{display:grid;grid-template-columns:1fr auto;gap:60px;align-items:end;margin-top:40px}
+.hero-row p{max-width:640px;color:var(--ink-2);font-size:20px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.hero-media{position:relative;margin-top:70px;height:min(78vh,720px);border-radius:28px;overflow:hidden;perspective:1400px;animation:reveal 1.6s var(--ease) .25s both}
+.hero-media .inner{position:absolute;inset:-12% 0;transition:transform 1s var(--ease)}
+.hero-media img{width:100%;height:100%;object-fit:cover;transform:translateY(var(--py,0px)) scale(1.04)}
+@keyframes reveal{from{clip-path:inset(30% 8% 30% 8% round 28px)}to{clip-path:inset(0 0 0 0 round 28px)}}
+.hero-media::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(10,14,11,.6),transparent 45%),radial-gradient(circle at var(--mx,50%) var(--my,40%),rgba(255,236,190,.22),transparent 40%);pointer-events:none}
+.plate{position:absolute;left:28px;bottom:28px;z-index:2;background:#fff;color:var(--ink);border:2.5px solid var(--ink);border-radius:10px;overflow:hidden;font-family:var(--display);box-shadow:0 20px 40px -20px rgba(0,0,0,.6)}
+.plate .top{background:#1f4fa8;color:#fff;font-size:10px;letter-spacing:.2em;text-align:center;padding:3px 0;font-weight:600}
+.plate .num{font-size:clamp(26px,3vw,40px);font-weight:800;letter-spacing:.06em;padding:4px 22px 6px}
+.hero-cap{position:absolute;right:28px;bottom:28px;z-index:2;color:#f4f1ea}
+.gauge{position:absolute;right:28px;top:28px;z-index:2;width:120px;height:120px;animation:spin 26s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.marquee{margin-top:90px;background:var(--green);color:var(--paper);overflow:hidden;padding:24px 0;transform:rotate(-1.2deg);width:104%;margin-left:-2%}
+.track{display:flex;width:max-content;animation:scroll 70s linear infinite}
+.track span{font-family:var(--display);font-weight:800;font-size:clamp(30px,4.4vw,60px);letter-spacing:-.03em;white-space:nowrap;padding:0 26px;display:flex;align-items:center;gap:52px}
+.track span:nth-child(even){font-family:var(--serif);font-style:italic;font-weight:400;color:var(--signal)}
+.track span::after{content:"";width:14px;height:14px;background:var(--signal);transform:rotate(45deg)}
+@keyframes scroll{to{transform:translateX(-50%)}}
+.sec{padding:150px 0}
+.head{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:end;margin-bottom:70px}
+.head h2{font-size:clamp(40px,5.4vw,86px);margin-top:18px}
+.head h2 em{color:var(--green-2)}
+.head p{color:var(--ink-2);max-width:540px}
+.js .rv{opacity:0;transform:translateY(36px);transition:opacity 1s var(--ease),transform 1s var(--ease);transition-delay:var(--d,0s)}
+.js .rv.in{opacity:1;transform:none}
+.themes{display:grid;grid-template-columns:repeat(4,1fr);border-top:1.5px solid var(--ink)}
+.theme{padding:34px 28px 40px 0;position:relative}
+.theme + .theme{padding-left:28px;border-left:1px solid var(--line)}
+.theme .n{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.theme .ic{width:58px;height:58px;border-radius:16px;background:var(--paper-2);display:grid;place-items:center;margin:26px 0 30px;transition:background-color .4s,transform .6s var(--ease)}
+.theme:hover .ic{background:var(--signal);transform:rotate(-8deg) scale(1.05)}
+.theme .ic svg{width:26px;height:26px}
+.theme h3{font-size:clamp(26px,2.2vw,34px)}
+.theme p{color:var(--ink-2);margin-top:16px;font-size:17px}
+.check-sec{background:var(--green);color:var(--paper);border-radius:36px;margin:0 16px}
+.check-sec .head p{color:#cdd8cf}
+.check-sec .kicker{color:var(--signal)}
+.check-sec .head h2 em{color:var(--signal)}
+.check-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:56px;align-items:start}
+.meter{position:sticky;top:160px;background:rgba(244,241,234,.06);border:1px solid rgba(244,241,234,.18);border-radius:24px;padding:36px}
+.meter .count{font-family:var(--display);font-weight:800;font-size:clamp(80px,9vw,140px);line-height:.9;letter-spacing:-.05em}
+.meter .count small{font-size:.4em;color:#cdd8cf;font-weight:600}
+.bar{height:10px;border-radius:99px;background:rgba(244,241,234,.15);margin:26px 0 16px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--signal);border-radius:inherit;transition:width .8s var(--ease)}
+.meter .status{font-family:var(--display);font-weight:600;font-size:18px}
+.meter p{color:#cdd8cf;margin-top:20px;font-size:16px}
+.items{list-style:none;display:flex;flex-direction:column;gap:12px}
+.item{display:grid;grid-template-columns:44px 1fr;gap:18px;align-items:center;padding:22px 24px;border-radius:18px;border:1px solid rgba(244,241,234,.18);cursor:pointer;user-select:none;transition:background-color .4s,border-color .4s,transform .5s var(--ease)}
+.item:hover{transform:translateX(6px);border-color:rgba(244,241,234,.4)}
+.item .box{width:44px;height:44px;border-radius:12px;border:1.5px solid rgba(244,241,234,.5);display:grid;place-items:center;transition:background-color .3s,border-color .3s}
+.item .box svg{width:22px;height:22px;stroke:var(--ink);stroke-dasharray:30;stroke-dashoffset:30;transition:stroke-dashoffset .5s var(--ease)}
+.item span{font-size:18px}
+.item.done{background:rgba(242,194,48,.12);border-color:var(--signal)}
+.item.done .box{background:var(--signal);border-color:var(--signal)}
+.item.done .box svg{stroke-dashoffset:0}
+.item.done span{color:#e7eee8}
+.faq{border-top:1.5px solid var(--ink)}
+.q{border-bottom:1px solid var(--line)}
+.q button{width:100%;background:none;border:none;cursor:pointer;display:grid;grid-template-columns:70px 1fr 48px;gap:16px;align-items:center;text-align:left;padding:28px 0}
+.q .p{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.q .t{font-family:var(--display);font-weight:600;font-size:clamp(20px,2vw,28px);letter-spacing:-.02em;line-height:1.2}
+.q .pm{width:48px;height:48px;border-radius:50%;border:1.5px solid var(--ink);display:grid;place-items:center;transition:transform .5s var(--ease),background-color .4s}
+.q.open .pm{transform:rotate(45deg);background:var(--signal)}
+.q .a{display:grid;grid-template-rows:0fr;transition:grid-template-rows .6s var(--ease)}
+.q.open .a{grid-template-rows:1fr}
+.q .a > div{overflow:hidden}
+.q .a p{padding:0 64px 30px 86px;color:var(--ink-2);max-width:960px}
+.about{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:start}
+.about-img{border-radius:24px;overflow:hidden;aspect-ratio:4/5;position:relative}
+.about-img img{width:100%;height:100%;object-fit:cover;transition:transform 1.4s var(--ease)}
+.about-img:hover img{transform:scale(1.05)}
+.about-img .fig{position:absolute;left:18px;top:18px;background:var(--paper);border-radius:999px;padding:6px 14px}
+.about-txt h2{font-size:clamp(40px,5vw,78px);margin:18px 0 30px}
+.about-txt h2 em{color:var(--green-2)}
+.about-txt p{color:var(--ink-2);margin-bottom:18px}
+.about-txt b{color:var(--ink)}
+.facts{margin-top:34px;border:1.5px solid var(--ink);border-radius:20px;background:var(--card);overflow:hidden}
+.fact{display:grid;grid-template-columns:180px 1fr;gap:16px;padding:16px 24px;font-size:16px}
+.fact + .fact{border-top:1px dashed var(--line)}
+.fact dt{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+.fact dd{font-family:var(--display);font-weight:600}
+.ok{display:inline-flex;align-items:center;gap:8px}.ok::before{content:"";width:9px;height:9px;border-radius:50%;background:#3d8b55}
+.reads{display:grid;grid-template-columns:1.4fr 1fr;grid-template-rows:auto auto;gap:20px}
+.read{position:relative;border-radius:24px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;color:#f4f1ea;min-height:300px;isolation:isolate}
+.read.big{grid-row:span 2;min-height:640px}
+.read img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transition:transform 1.4s var(--ease)}
+.read:hover img{transform:scale(1.06)}
+.read::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(to top,rgba(10,14,11,.88),rgba(10,14,11,.2) 65%)}
+.read .in{padding:30px}
+.read .tag{display:inline-block;background:var(--signal);color:var(--ink);border-radius:999px;padding:5px 12px;margin-bottom:16px}
+.read h3{font-size:clamp(26px,2.6vw,44px);max-width:620px}
+.read p{margin-top:12px;color:#dfe6e0;max-width:560px;font-size:17px}
+.read .more{display:inline-flex;gap:8px;margin-top:18px;font-family:var(--display);font-weight:600;font-size:15px;border-bottom:1.5px solid var(--signal);padding-bottom:2px}
+.reads-note{margin-top:28px;color:var(--ink-2)}
+.reads-note a{border-bottom:1.5px solid var(--signal)}
+.policies{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.pol{border:1.5px solid var(--ink);border-radius:24px;padding:40px;background:var(--card)}
+.pol h3{font-size:36px;margin-bottom:10px}
+.pol .lead{color:var(--muted);font-size:16px;margin-bottom:12px}
+.pol h4{font-size:19px;letter-spacing:-.01em;margin-top:24px;display:flex;gap:10px;line-height:1.2}
+.pol h4 b{color:var(--green-2)}
+.pol p,.pol li{color:var(--ink-2);font-size:16px;margin-top:8px}
+.pol ul{margin-left:20px}
+.pol a{border-bottom:1.5px solid var(--signal)}
+.contact{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.cbox{border-radius:24px;padding:34px;background:var(--paper-2);display:flex;flex-direction:column;gap:12px;min-height:260px}
+.cbox.dark{background:var(--ink);color:var(--paper)}
+.cbox.sig{background:var(--signal)}
+.cbox h3{font-size:28px;margin-bottom:auto}
+.cbox a.v{font-family:var(--display);font-weight:600;font-size:clamp(20px,1.9vw,26px);letter-spacing:-.02em;word-break:break-word;display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:12px;border-top:1px solid currentColor;transition:padding .5s var(--ease)}
+.cbox a.v:hover{padding-left:8px}
+.cbox .s{font-size:15px;opacity:.85}
+.contact-note{margin-top:30px;color:var(--ink-2);max-width:900px}
+footer{background:var(--ink);color:var(--paper);padding:110px 0 36px;margin-top:150px;overflow:hidden}
+.foot-big{font-family:var(--display);font-weight:800;font-size:clamp(70px,15vw,250px);letter-spacing:-.06em;line-height:.85;white-space:nowrap}
+.foot-big em{font-family:var(--serif);font-weight:400;color:var(--signal);letter-spacing:-.03em}
+.foot-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;border-top:1px solid rgba(244,241,234,.2);margin-top:50px;padding-top:24px;font-size:14px;color:#c9cdc6}
+.to-top{background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:3px;color:var(--paper)}
+.cookie{position:fixed;left:20px;bottom:20px;z-index:130;max-width:360px;background:var(--card);border:1.5px solid var(--ink);border-radius:18px;padding:16px 18px;box-shadow:0 30px 60px -30px rgba(0,0,0,.45);font-size:13px;line-height:1.5;color:var(--ink-2);transition:transform .7s var(--ease),opacity .5s}
+.cookie.hide{transform:translateY(140%);opacity:0;pointer-events:none}
+.cookie a{border-bottom:1.5px solid var(--signal)}
+.cookie .btn{margin-top:10px;padding:8px 16px;font-size:13px}
+@media (max-width:1024px){
+  .links,.nav .btn{display:none}.menu-btn{display:inline-flex}
+  .head,.about,.check-grid,.policies,.hero-row{grid-template-columns:1fr}
+  .themes{grid-template-columns:1fr 1fr}
+  .theme:nth-child(3){padding-left:0;border-left:none}
+  .theme:nth-child(n+3){border-top:1px solid var(--line)}
+  .meter{position:relative;top:0}
+  .reads{grid-template-columns:1fr 1fr}.read.big{grid-column:span 2;grid-row:auto;min-height:480px}
+  .contact{grid-template-columns:1fr 1fr}
+}
+@media (max-width:640px){
+  body{font-size:17px}
+  :root{--bar:58px}
+  .wrap{width:calc(100% - 36px)}
+  .notice{justify-content:flex-start;font-size:12px}
+  .notice .long{display:none}.notice .short{display:inline}
+  .hero{padding-top:calc(var(--bar) + 110px)}
+  .hero-top{flex-direction:column;gap:4px}
+  .hero-row p{font-size:17px}
+  .hero-media{height:440px;margin-top:46px;border-radius:20px}
+  .gauge{width:84px;height:84px;right:16px;top:16px}
+  .plate{left:16px;bottom:16px}.hero-cap{display:none}
+  .sec{padding:96px 0}
+  .head{margin-bottom:44px;gap:20px}
+  .themes{grid-template-columns:1fr}
+  .theme,.theme + .theme{padding:30px 0;border-left:none;border-top:1px solid var(--line)}
+  .check-sec{margin:0 8px;border-radius:24px}
+  .meter{padding:26px}
+  .item{padding:18px;grid-template-columns:38px 1fr;gap:14px}.item .box{width:38px;height:38px}.item span{font-size:16px}
+  .q button{grid-template-columns:44px 1fr 40px;gap:10px}.q .pm{width:40px;height:40px}
+  .q .a p{padding:0 0 26px 54px}
+  .fact{grid-template-columns:1fr;gap:4px;padding:14px 18px}
+  .reads{grid-template-columns:1fr}.read.big{grid-column:auto;min-height:440px}
+  .pol{padding:26px}
+  .contact{grid-template-columns:1fr}
+  .cookie{left:12px;right:12px;bottom:12px;max-width:none}
+  footer{margin-top:96px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.js .rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="notice" role="note">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 1 21h22z"/><path d="M12 9v5M12 17.5h.01"/></svg>
+  <span class="long"><b>CNPJ 03.402.137/0001-60.</b> Portal independente mantido por empresa privada do comércio varejista de artigos usados (CNAE 47.85-7-99), com finalidade <b>somente informativa</b>. Não emite documento, não cobra taxa e não intermedeia negócios. <a href="#sobre" data-scroll>Saiba mais</a></span>
+  <span class="short"><b>Projeto independente</b> e apenas informativo · CNPJ 03.402.137/0001-60. <a href="#sobre" data-scroll>Saiba mais</a></span>
+</div>
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a href="#topo" class="brand" data-scroll>
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#1d3a2c"/><circle cx="32" cy="32" r="17" fill="none" stroke="#f2c230" stroke-width="5"/><path d="M32 15v10M32 39v10M15 32h10" stroke="#f2c230" stroke-width="5" stroke-linecap="round"/></svg>
+      <span>Rota em Dia<small>Portal informativo veicular</small></span>
+    </a>
+    <nav class="links">
+      <a href="#temas" data-scroll>Temas</a>
+      <a href="#checklist" data-scroll>Checklist</a>
+      <a href="#duvidas" data-scroll>Dúvidas</a>
+      <a href="#sobre" data-scroll>Sobre</a>
+      <a href="#leituras" data-scroll>Leituras</a>
+      <a href="#politicas" data-scroll>Termos</a>
+    </nav>
+    <a href="#contato" class="btn" data-scroll>Falar com a redação <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    <button class="menu-btn" id="menuBtn" aria-label="Abrir menu"><span></span></button>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#temas" data-scroll>Temas</a>
+  <a href="#checklist" data-scroll>Checklist</a>
+  <a href="#duvidas" data-scroll>Dúvidas</a>
+  <a href="#sobre" data-scroll>Sobre</a>
+  <a href="#leituras" data-scroll>Leituras</a>
+  <a href="#politicas" data-scroll>Termos</a>
+  <a href="#contato" data-scroll>Contato</a>
+</div>
+
+<main id="topo">
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-top mono fade"><span>Leitura independente · aberta · gratuita</span><span>Edição permanente — Nº 01 · São Paulo/SP</span></div>
+      <h1>
+        <span class="line"><span>Documento em dia,</span></span>
+        <span class="line"><span>transferência sem susto</span></span>
+        <span class="line"><span>e revisão <em>no tempo certo</em></span></span>
+        <span class="line"><span>— num só lugar.</span></span>
+      </h1>
+      <div class="hero-row">
+        <p class="fade">Prazo de licenciamento, vistoria de transferência e compra de usado costumam vir em informação picada. Aqui esses assuntos ficam juntos, em texto direto, para quem dirige em São Paulo. Quem procura despachante, emissão de documento ou orçamento não encontra atendimento: o portal só publica texto.</p>
+        <div class="hero-cta fade">
+          <a href="#temas" class="btn" data-scroll>Ler os quatro temas <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a href="#contato" class="btn ghost" data-scroll>Falar com a redação</a>
+        </div>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="hero-media" id="heroMedia">
+        <div class="inner" id="heroInner"><img src="https://images.unsplash.com/photo-1573841261383-80429863a1f7?auto=format&fit=crop&w=1800&q=80" alt="Carro clássico verde estacionado em pátio molhado"></div>
+        <svg class="gauge" viewBox="0 0 200 200" aria-hidden="true">
+          <defs><path id="c" d="M100,100 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0"/></defs>
+          <circle cx="100" cy="100" r="98" fill="#f2c230" stroke="#141613" stroke-width="2"/>
+          <text font-family="IBM Plex Mono" font-size="15" letter-spacing="3.6" fill="#141613"><textPath href="#c">SOMENTE INFORMATIVO • PROJETO INDEPENDENTE • </textPath></text>
+          <circle cx="100" cy="100" r="22" fill="#141613"/>
+        </svg>
+        <div class="plate"><div class="top">BRASIL</div><div class="num">ROT·4D14</div></div>
+        <div class="hero-cap mono">Rota em Dia · São Paulo, SP</div>
+      </div>
+    </div>
+    <div class="marquee" aria-hidden="true">
+      <div class="track">
+        <span>Documentação em dia</span><span>Transferência de propriedade</span><span>Licenciamento anual</span><span>Compra de usado</span><span>Revisão preventiva</span>
+        <span>Documentação em dia</span><span>Transferência de propriedade</span><span>Licenciamento anual</span><span>Compra de usado</span><span>Revisão preventiva</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="temas">
+    <div class="wrap">
+      <div class="head">
+        <div><span class="kicker mono rv">Temas</span><h2 class="rv" style="--d:.08s">Quatro assuntos cobrem a maior parte <em>das dúvidas</em></h2></div>
+        <p class="rv" style="--d:.14s">Cada tema vira um artigo ou uma seção do guia, com prazo, exemplo e o limite do que um texto resolve. Nenhum bloco processa solicitação do leitor.</p>
+      </div>
+      <div class="themes">
+        <article class="theme rv"><span class="n">01</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div><h3>Documentação em dia</h3><p>O documento anual do carro e a carteira de habilitação têm calendários separados, e confundir os dois é o descuido mais comum. A data do licenciamento segue o final da placa, conforme o calendário do Estado.</p></article>
+        <article class="theme rv" style="--d:.08s"><span class="n">02</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 7h13l-3-3M17 17H4l3 3"/></svg></div><h3>Transferência de propriedade</h3><p>A vistoria olha mais a identificação do que o motor: numeração do chassi, plaqueta, padrão da placa e itens de segurança. Saber disso antes evita uma segunda ida ao pátio.</p></article>
+        <article class="theme rv" style="--d:.16s"><span class="n">03</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></div><h3>Comprar usado com cabeça fria</h3><p>Antes de fechar, vale olhar o histórico de manutenção, o desgaste dos pneus e o alinhamento das portas, e pedir por escrito o que foi combinado. Conhecer o vendedor não dispensa conferir o chassi.</p></article>
+        <article class="theme rv" style="--d:.24s"><span class="n">04</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg></div><h3>Revisão e manutenção preventiva</h3><p>Quilômetros e meses contam juntos, porque óleo e borracha envelhecem até parados. Em trajetos curtos e repetidos, o prazo em meses costuma vencer antes do hodômetro.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec check-sec" id="checklist">
+    <div class="wrap">
+      <div class="head">
+        <div><span class="kicker mono rv">Checklist</span><h2 class="rv" style="--d:.08s">Seis coisas para conferir antes de fechar <em>a transferência</em></h2></div>
+        <p class="rv" style="--d:.14s">Assinale o que já está resolvido. O que costuma atrasar a transferência é papel que ficou em casa, numa gaveta ou na cabeça de outra pessoa.</p>
+      </div>
+      <div class="check-grid">
+        <div class="meter rv">
+          <div class="count"><span id="done">0</span><small>/ 6</small></div>
+          <div class="bar"><i id="barFill"></i></div>
+          <div class="status" id="checkStatus">Faltam 6 itens</div>
+          <p>A conversa é o primeiro passo de qualquer negociação. Quem chega com os seis itens evita viagem perdida e sai sabendo o que foi decidido — e por quê.</p>
+        </div>
+        <ul class="items" id="items">
+          <li class="item rv" tabindex="0" role="checkbox" aria-checked="false"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="m5 12 5 5 9-10"/></svg></span><span>O documento do veículo (CRLV) mais recente, em mãos e legível</span></li>
+          <li class="item rv" tabindex="0" role="checkbox" aria-checked="false"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="m5 12 5 5 9-10"/></svg></span><span>Documento de identidade do comprador dentro da validade</span></li>
+          <li class="item rv" tabindex="0" role="checkbox" aria-checked="false"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="m5 12 5 5 9-10"/></svg></span><span>Comprovante de residência recente, com endereço que confere com o cadastro</span></li>
+          <li class="item rv" tabindex="0" role="checkbox" aria-checked="false"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="m5 12 5 5 9-10"/></svg></span><span>Número do chassi e do motor conferidos com o documento, antes de assinar qualquer recibo</span></li>
+          <li class="item rv" tabindex="0" role="checkbox" aria-checked="false"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="m5 12 5 5 9-10"/></svg></span><span>Consulta de débitos feita: multas e restrições quitadas ou negociadas por escrito</span></li>
+          <li class="item rv" tabindex="0" role="checkbox" aria-checked="false"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="m5 12 5 5 9-10"/></svg></span><span>Recibo de compra e venda preenchido com dados completos, em duas vias assinadas</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="duvidas">
+    <div class="wrap">
+      <div class="head">
+        <div><span class="kicker mono rv">Dúvidas</span><h2 class="rv" style="--d:.08s">Dúvidas que chegam com mais <em>frequência</em></h2></div>
+        <p class="rv" style="--d:.14s">Respostas curtas para as perguntas mais comuns. Prazos e regras podem mudar: confirme sempre no canal oficial do órgão de trânsito.</p>
+      </div>
+      <div class="faq" id="faq">
+        <div class="q rv open"><button aria-expanded="true"><span class="p">P1</span><span class="t">O portal agenda vistoria, emite documento ou resolve pendência por mim?</span><span class="pm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="a"><div><p>Não. Este portal só publica texto: não agenda, não emite, não protocola, não cobra e não encaminha pedido a ninguém. Para ato prático, procure o órgão de trânsito competente ou um profissional habilitado.</p></div></div></div>
+        <div class="q rv"><button aria-expanded="false"><span class="p">P2</span><span class="t">Com que frequência o carro deve passar pela revisão?</span><span class="pm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="a"><div><p>O manual do modelo manda. Como régua de mercado, fala-se em 10 mil km ou 12 meses, valendo o que chegar antes; uso pesado e trajetos curtos pedem intervalos menores.</p></div></div></div>
+        <div class="q rv"><button aria-expanded="false"><span class="p">P3</span><span class="t">O conteúdo vale para quem mora no interior, longe da capital?</span><span class="pm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="a"><div><p>Vale. A regra de documentação é estadual, a mesma na capital e no interior de São Paulo, e a técnica do carro não muda com o CEP. O que varia é a distância até a oficina ou ao pátio de vistoria.</p></div></div></div>
+        <div class="q rv"><button aria-expanded="false"><span class="p">P4</span><span class="t">Quem assina os textos e como se corrige um erro?</span><span class="pm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="a"><div><p>O portal indica a data de publicação de cada texto e não promete checagem que não consiga provar. Quando alguém aponta um erro, a correção entra no texto com data nova.</p></div></div></div>
+        <div class="q rv"><button aria-expanded="false"><span class="p">P5</span><span class="t">Débito em aberto impede a transferência do veículo?</span><span class="pm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="a"><div><p>Em regra, sim: multas, licenciamento em atraso e restrições judiciais costumam travar a transferência até a quitação. Por isso a consulta de débitos entra no checklist antes de qualquer recibo assinado.</p></div></div></div>
+        <div class="q rv"><button aria-expanded="false"><span class="p">P6</span><span class="t">Como avisar sobre um erro ou sugerir um tema?</span><span class="pm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="a"><div><p>Escrevendo para contato@casadosusados.com.br. Não há formulário, cadastro nem login. Correção confirmada entra no texto, e a data da revisão aparece no próprio artigo.</p></div></div></div>
+      </div>
+    </div>
